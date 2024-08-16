@@ -1,0 +1,33 @@
+{
+    "name": "yokke/task-tracker",
+    "description": "It's a task tracker that allows user to create,read,update and delete tasks",
+    "autoload": {
+        "psr-4": {
+            "Yokke\\TaskTracker\\": "src/",
+            "Config\\": "config/",
+            "Entity\\": "src/Entity",
+            "Enumeration\\": "src/Enumeration/",
+            "Service\\": "src/Service/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Yokke",
+            "email": "mdembelepro@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "phpro/grumphp": "^2.6",
+        "phpstan/phpstan": "^1.11",
+        "phpunit/phpunit": "11"
+    },
+    "scripts": {
+        "grumphp-tests" : "php ./vendor/bin/grumphp run"
+        
+    },
+    "config": {
+        "allow-plugins": {
+            "phpro/grumphp": true
+        }
+    }
+}

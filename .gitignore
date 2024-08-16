@@ -1,0 +1,4 @@
+vendor
+phpstan.neon
+grumphp.yml
+tasks.json
