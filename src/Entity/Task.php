@@ -15,15 +15,74 @@ namespace Entity;
 
 class Task{
 
-    /**
-     * Summary of task
-     * 
-     * @var array<string>
-     */
-    public array $task = [];
+
     
-    public function __construct(public int $id,public string $description,public string $status,public string $createdAt , public string $updatedAt){
+    public int $id;
+    public string $description;
+    public ?string $status;
+    public string $createdAt;
+    public ?string $updatedAt;
+    
+    /**
+     * Summary of setId
+     * 
+     * @param int $id
+     * 
+     * @return void
+     */
+    public function setId($id):void
+    {
+      $this->id = $id;
     }
+
+    /**
+     * Summary of setDescription
+     * 
+     * @param string $description
+     * 
+     * @return void
+     */
+    public function setDescription(string $description):void
+    {
+      $this->description = $description;
+    }
+
+    /**
+     * Summary of setStatus
+     * 
+     * @param string $status
+     * 
+     * @return void
+     */
+    public function setStatus(?string $status = null):void
+    {
+      $this->status = $status;
+    }
+
+    /**
+     * Summary of setCreatedAt
+     * 
+     * @param string $createdAt
+     * 
+     * @return void
+     */
+    public function setCreatedAt(string $createdAt):void
+    {
+      $this->createdAt = $createdAt;
+    }
+
+    /**
+     * Summary of setUpdatedAt
+     * 
+     * @param string $updatedAt
+     * 
+     * @return void
+     */
+    public function setUpdatedAt(?string $updatedAt = null):void 
+    {
+      $this->updatedAt = $updatedAt;
+    }
+
 
     /**
      * Summary of getId
@@ -50,7 +109,7 @@ class Task{
      * 
      * @return string
      */
-    public function getStatus():string
+    public function getStatus():?string
     {
       return $this->status;
     }
@@ -70,19 +129,9 @@ class Task{
      * 
      * @return string
      */
-    public function getUpdatedAt():string
+    public function getUpdatedAt():?string
     {
-      return $this->createdAt;
+      return $this->updatedAt;
     }
 
-    /**
-     * Summary of getTask
-     * 
-     * @return string[]
-     */
-    public function getTask():array
-    {
-        return $this->task;
-    }
-   
 }

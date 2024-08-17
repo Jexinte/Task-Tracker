@@ -14,14 +14,13 @@ use Entity\Task;
 use PHPUnit\Framework\TestCase;
 
 class TaskTest extends TestCase{
-    /**
-     * Summary of taskObj
-     * 
-     * @return Entity\Task
-     */
-    public function taskObj():Task
+    
+     private Task $task;
+
+    public function setUp():void
     {
-        return new Task(1,"lorem ipsum","done",date('Y-m-d'),date('Y-m-d'));
+          parent::setUp();
+          $this->task = new Task();
     }
 
     /**
@@ -31,7 +30,8 @@ class TaskTest extends TestCase{
      */
     public function testShouldReturnTheSameId():void
     {
-         $this->assertSame(1,$this->taskObj()->getId());
+         $this->task->setId(1);
+         $this->assertSame(1,$this->task->getId());
     }
 
     /**
@@ -41,7 +41,8 @@ class TaskTest extends TestCase{
      */
     public function testShouldReturnTheSameDescription():void
     {
-         $this->assertSame("lorem ipsum",$this->taskObj()->getDescription());
+         $this->task->setDescription("lorem ipsum");
+         $this->assertSame("lorem ipsum",$this->task->getDescription());
     }
 
     /**
@@ -49,9 +50,10 @@ class TaskTest extends TestCase{
      * 
      * @return void
      */
-    public function testShouldReturnTheSameStatus():void
+    public function testShouldReturnANullStatus():void
     {
-         $this->assertSame("done",$this->taskObj()->getStatus());
+         $this->task->setStatus();
+         $this->assertSame(null,$this->task->getStatus());
     }
 
     /**
@@ -61,7 +63,8 @@ class TaskTest extends TestCase{
      */
     public function testShouldReturnTheSameCreatedAt():void
     {
-         $this->assertSame(date('Y-m-d'),$this->taskObj()->getCreatedAt());
+         $this->task->setCreatedAt(date('Y-m-d'));
+         $this->assertSame(date('Y-m-d'),$this->task->getCreatedAt());
     }
 
     /**
@@ -71,6 +74,7 @@ class TaskTest extends TestCase{
      */
     public function testShouldReturnTheSameUpdatedAt():void
     {
-         $this->assertSame(date('Y-m-d'),$this->taskObj()->getUpdatedAt());
+         $this->task->setUpdatedAt();
+         $this->assertSame(null,$this->task->getUpdatedAt());
     }
 }
