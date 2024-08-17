@@ -18,7 +18,11 @@ use Enumeration\FilePath;
 
 class JsonFile{
 
-    
+    /**
+     * Summary of tasks
+     * @var array<string>
+     */
+    public ?array $tasks;
     /**
      * Summary of isCreated
      *
@@ -27,10 +31,12 @@ class JsonFile{
     public function isCreated(): ?bool
     {
         $files = scandir(FolderPath::CONFIG);
-
-        if(is_array($files) && in_array(FilePath::TASKS,$files)){
+        $filename = basename(FilePath::TASKS,"tasks.json");
+        
+        if(in_array($filename,$files)){
           return true;
         }
+
         return false;
         
     }
@@ -42,9 +48,8 @@ class JsonFile{
      */
     public function create(): void
     {
-        if($this->isCreated() == false){
+        if(!$this->isCreated()){
         $file = fopen(FilePath::TASKS,"w");
-        fwrite($file,"{\n\n}");
         fclose($file);
         }
 
@@ -56,10 +61,19 @@ class JsonFile{
      * @return array<string>
      */
     public function content(): array
-    {
+    {           
+        switch(file_exists(FilePath::TASKS))
+        {
+            case true:
+            $this->tasks = json_decode(file_get_contents(FilePath::TASKS),true);
+            break;
 
-        return file_exists(FilePath::TASKS) ? json_decode(file_get_contents(FilePath::TASKS),true) : [];
-        
+            default:
+            $this->tasks = [];
+            break;
+        }
+        return  $this->tasks;
+            
     }
 
 }
