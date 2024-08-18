@@ -2,3 +2,4 @@ vendor
 phpstan.neon
 grumphp.yml
 tasks.json
+notes.md
