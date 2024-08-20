@@ -32,19 +32,12 @@ class JsonFile{
     {
         $files = scandir(FolderPath::CONFIG);
         $filename = basename(FilePath::TASKS,"tasks.json");
-        
-        if(in_array($filename,$files)){
-          return true;
-        }
-
-        return false;
+        return in_array($filename,$files);
         
     }
     
     /**
      * Summary of create
-     *
-     * @return void
      */
     public function create(): void
     {
@@ -58,18 +51,18 @@ class JsonFile{
     /**
      * Summary of content
      *
-     * @return array<string>
+     * @return array<null|string>
      */
-    public function content(): array
+    public function content(): ?array
     {           
-        switch(file_exists(FilePath::TASKS))
+        switch(true)
         {
-            case true:
-            $this->tasks = json_decode(file_get_contents(FilePath::TASKS),true);
+            case file_exists(FilePath::TASKS) && is_null(json_decode(file_get_contents(FilePath::TASKS),true)):
+                $this->tasks = [];
             break;
 
             default:
-            $this->tasks = [];
+            $this->tasks = json_decode(file_get_contents(FilePath::TASKS),true);
             break;
         }
         return  $this->tasks;

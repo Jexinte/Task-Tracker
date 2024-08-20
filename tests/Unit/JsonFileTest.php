@@ -20,8 +20,6 @@ class JsonFileTest extends TestCase
     private JsonFile $jsonFile;
     /**
      * Summary of jsonFile
-     *
-     * @return void
      */
     public function setUp(): void
     {
@@ -33,8 +31,6 @@ class JsonFileTest extends TestCase
 
     /**
      * Summary of testShouldReturnFalseIfFileNotCreated
-     *
-     * @return void
      */
     public function testShouldReturnFalseIfFileNotCreated(): void
     {
@@ -47,8 +43,6 @@ class JsonFileTest extends TestCase
 
     /**
      * Summary of testShouldReturnTrueIfFileIsCreated
-     * 
-     * @return void
      */
     public function testShouldReturnTrueIfFileIsCreated(): void
     {
@@ -58,8 +52,6 @@ class JsonFileTest extends TestCase
 
     /**
      * Summary of testShouldReturnAJsonFile
-     *
-     * @return void
      */
     public function testShouldReturnAJsonFile(): void
     {
@@ -69,22 +61,18 @@ class JsonFileTest extends TestCase
 
     /**
      * Summary of testShouldReturnAnEmptyArrayWhenFileDoesntExist
-     *
-     * @return void
      */
     public function testShouldReturnAnEmptyArrayWhenFileDoesntExist(): void
     {
-        if(file_exists(FilePath::TASKS))
-        {
-            unlink(FilePath::TASKS);
-        }
+        // if(file_exists(FilePath::TASKS))
+        // {
+        //     unlink(FilePath::TASKS);
+        // }
         $this->assertSame([], $this->jsonFile->content());
     }
 
     /**
      * Summary of testShouldReturnTheSameAmountOfElementsBetweenOriginalDataAndDataSavedInJsonFile
-     * 
-     * @return void
      */
     public function testShouldReturnTheSameAmountOfElementsBetweenOriginalDataAndDataSavedInJsonFile(): void
     {
@@ -123,8 +111,6 @@ class JsonFileTest extends TestCase
 
     /**
      * Summary of testShouldReturnTheSameAmountOfDataw
-     * 
-     * @return void
      */
     public function testShouldReturnTheSameAmountOfData(): void
     {
@@ -160,5 +146,6 @@ class JsonFileTest extends TestCase
 
         $data = json_decode(file_get_contents(FilePath::TASKS),true);
         $this->assertCount(count($data), $this->jsonFile->content());
+        unlink(FilePath::TASKS);
     }
 }

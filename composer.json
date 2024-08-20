@@ -21,10 +21,7 @@
         "phpstan/phpstan": "^1.11",
         "phpunit/phpunit": "11"
     },
-    "scripts": {
-        "grumphp-tests" : "php ./vendor/bin/grumphp run"
-        
-    },
+    
     "config": {
         "allow-plugins": {
             "phpro/grumphp": true
