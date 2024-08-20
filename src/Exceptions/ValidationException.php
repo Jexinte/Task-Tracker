@@ -27,11 +27,7 @@ class ValidationException extends Exception
 
     /**
      * Summary of setTypeAndValueOfException
-     * 
-     * @param string $key
-     * 
-     * @param string $message
-     * 
+     *
      * @return ValidationException
      */
     public function setTypeAndValueOfException(

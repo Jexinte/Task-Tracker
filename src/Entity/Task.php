@@ -12,6 +12,8 @@
 
 namespace Entity;
 
+use Config\JsonFile;
+
 
 class Task{
 
@@ -22,25 +24,36 @@ class Task{
     public ?string $status;
     public string $createdAt;
     public ?string $updatedAt;
+
+    /**
+     * Summary of __construct
+     */
+    public function __construct(private JsonFile $jsonFile){
+      if(!$this->jsonFile->isCreated()){
+        $this->jsonFile->create();
+    }
+    }
     
     /**
      * Summary of setId
-     * 
-     * @param int $id
-     * 
-     * @return void
      */
-    public function setId($id):void
+    public function setId():void
     {
-      $this->id = $id;
+      switch(true){
+        case $this->jsonFile->content() === null || $this->jsonFile->content() === []:
+        $this->id = 1;
+        break;
+        
+        default:
+       $this->id = count($this->jsonFile->content()) + 1;
+       break; 
+      }
     }
 
     /**
      * Summary of setDescription
-     * 
-     * @param string $description
-     * 
-     * @return void
+     *
+     *
      */
     public function setDescription(string $description):void
     {
@@ -49,10 +62,8 @@ class Task{
 
     /**
      * Summary of setStatus
-     * 
+     *
      * @param string $status
-     * 
-     * @return void
      */
     public function setStatus(?string $status = null):void
     {
@@ -61,22 +72,16 @@ class Task{
 
     /**
      * Summary of setCreatedAt
-     * 
-     * @param string $createdAt
-     * 
-     * @return void
      */
-    public function setCreatedAt(string $createdAt):void
+    public function setCreatedAt():void
     {
-      $this->createdAt = $createdAt;
+      $this->createdAt = date('Y-m-d');
     }
 
     /**
      * Summary of setUpdatedAt
-     * 
+     *
      * @param string $updatedAt
-     * 
-     * @return void
      */
     public function setUpdatedAt(?string $updatedAt = null):void 
     {
@@ -86,8 +91,6 @@ class Task{
 
     /**
      * Summary of getId
-     * 
-     * @return int
      */
     public function getId():int
     {
@@ -96,8 +99,6 @@ class Task{
 
     /**
      * Summary of getDescription
-     * 
-     * @return string
      */
     public function getDescription():string
     {
@@ -116,8 +117,6 @@ class Task{
 
     /**
      * Summary of getCreatedAt
-     * 
-     * @return string
      */
     public function getCreatedAt():string
     {
@@ -134,4 +133,14 @@ class Task{
       return $this->updatedAt;
     }
 
+    /**
+     * Summary of getTasks
+     * 
+     * @return array<string>
+     */
+    public function getTasks()
+    {
+      return $this->jsonFile->content();
+     
+    }
 }
