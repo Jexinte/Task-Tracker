@@ -12,6 +12,7 @@
 
 namespace Service;
 
+use Exception;
 use Entity\Task;
 use Config\JsonFile;
 use Enumeration\Message;
@@ -21,7 +22,8 @@ use Enumeration\FilePath;
  * Summary of TaskManagerCrud
  */
 interface TaskManagerCrud {
-    public function create(mixed $value):bool;
+    public function create(mixed $value):?bool;
+    public function update(mixed $value):?bool;
 }
 
 
@@ -43,19 +45,17 @@ class TaskCrudService implements TaskManagerCrud{
      * 
      * @return bool
      */
-    public function create(mixed $taskValue):bool
+    public function create(mixed $taskValue):?bool
     {
-
-   
         if(is_string($taskValue)){
           
             $this->handleDataForCreate($taskValue);
             $stdOut = fopen('php://stdout','a');
-            fwrite($stdOut,Message::TASK_ADDED_SUCCESSFULLY.$this->task->getId().")\n");
+            fwrite($stdOut,Message::TASK_ADDED_SUCCESSFULLY.$this->task->getId().")\n\n");
             fclose($stdOut);
             return true;
         }
-        return false;
+      return null;
     }
     
     /**
@@ -87,4 +87,92 @@ class TaskCrudService implements TaskManagerCrud{
         file_put_contents(FilePath::TASKS,$json);
     }
 
+    /**
+     * Summary of update
+     * 
+     * @param mixed $arrWithIdAndTaskNameToUpdated
+     * 
+     * @return bool
+     */
+    public function update(mixed $arrWithIdAndTaskNameToUpdated):?bool
+    {
+        if(is_array($arrWithIdAndTaskNameToUpdated)){
+
+            $id = current($arrWithIdAndTaskNameToUpdated);
+            $taskDescription = $arrWithIdAndTaskNameToUpdated[1];
+            $taskArrayFromJson = $this->handleDataForUpdate($arrWithIdAndTaskNameToUpdated);
+            
+            $taskArrayFromJson["description"]  = $taskDescription;
+            $taskArrayFromJson["updatedAt"]  = date('Y-m-d');
+            
+            $dataUpdated = $this->updateDataInOriginalArrayOfTasks($id,$this->jsonFile->content(),$taskArrayFromJson);
+            $json = json_encode($dataUpdated);
+            file_put_contents(Filepath::TASKS,$json);
+
+            $stdOut = fopen('php://stdout','a');
+            fwrite($stdOut," ".Message::TASK_UPDATED_SUCCESSFULLY.$id.")\n\n");
+            fclose($stdOut);
+            return true;
+        }
+        return null;
+    }
+
+    /**
+     * Summary of updateDataInOriginalArrayOfTasks
+     * 
+     * @param int $id
+     * @param array<string> $arrOfOriginalData
+     * @param array<string> $arrOfDataUpdated
+     * 
+     * @return array<string>
+     */
+    public function updateDataInOriginalArrayOfTasks(int $id, array $arrOfOriginalData,array $arrOfDataUpdated):array
+    {
+
+        foreach($arrOfOriginalData as $k => $originalData){
+           if($originalData["id"] == $id){
+            $arrOfOriginalData[$k] = $arrOfDataUpdated;
+           }
+        }
+        return $arrOfOriginalData;
+    }
+
+
+    /**
+     * Summary of handleDataForUpdate
+     * 
+     * @param array<int,string> $arrWithIdAndTaskNameToUpdated
+     * 
+     * @return array<string>|bool
+     */
+    public function handleDataForUpdate(array $arrWithIdAndTaskNameToUpdated):bool|array
+    {
+        $arrayOfDataInJsonFile = $this->jsonFile->content();
+        $id = current($arrWithIdAndTaskNameToUpdated);
+        if(empty($arrayOfDataInJsonFile)){
+            return false;
+        }
+
+       return $this->findOne($id,$arrayOfDataInJsonFile);
+    }
+
+    /**
+     * Summary of findOne
+     * 
+     * @param int $id
+     * @param array $arrayOfDataInJsonFile
+     * 
+     * @throws \Exception
+     * 
+     * @return array<string>
+     */
+    public function findOne(int $id , array $arrayOfDataInJsonFile):array
+    {
+        foreach($arrayOfDataInJsonFile as $task){
+            if($task["id"] == $id){
+                return $task;
+            }            
+        }
+        throw new Exception(Message::TASK_NOT_FOUND.$id.Message::TASK_NOT_FOUND_END);
+    }
 }

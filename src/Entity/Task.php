@@ -133,14 +133,5 @@ class Task{
       return $this->updatedAt;
     }
 
-    /**
-     * Summary of getTasks
-     * 
-     * @return array<string>
-     */
-    public function getTasks()
-    {
-      return $this->jsonFile->content();
-     
-    }
+
 }

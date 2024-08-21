@@ -59,9 +59,12 @@ class TaskManagerService
         while (!$this->aCommandHaventBeenChose) {
             $streamToOutputTaskCliLabel = fopen('php://stdout', 'w');
 
-            fwrite($streamToOutputTaskCliLabel," ".Message::TASK_CLI_LABEL.COLOR::YELLOW);
 
+            fwrite($streamToOutputTaskCliLabel," ".Message::TASK_CLI_LABEL.COLOR::YELLOW);
+            
             $streamInput = fopen('php://stdin', "w");
+
+
             try {
                 $this->detectCommand(Message::TASK_CLI_LABEL.COLOR::YELLOW, trim(fgets($streamInput)));
             } catch (Exception $e) {
@@ -72,6 +75,7 @@ class TaskManagerService
             fclose($streamToOutputTaskCliLabel);
         }
     }
+    
 
     /**
      * Summary of detectCommand
@@ -111,10 +115,15 @@ class TaskManagerService
             case TaskCommand::ADD:
                 $taskCreated = $this->taskCrudService->create($this->errorCheckerService->onAddCommandValues($value));
                 if($taskCreated){
-                    $this->aCommandHaventBeenChose = true;
                     return;
                 }
-                throw new Exception(" ".Message::WRONG_TYPO);
+                throw new Exception(" ".Message::TASK_NAME_FOR_THE_ADD_COMMAND_HAS_NOT_BEEN_SUPPLIED);
+            case TaskCommand::UPDATE:
+                $taskUpdated = $this->taskCrudService->update($this->errorCheckerService->onUpdateCommandValues($value));
+                if($taskUpdated){
+                    return;
+                }
+               throw new Exception(" ".Message::TASK_NAME_FOR_THE_UPDATE_COMMAND_HAS_NOT_BEEN_SUPPLIED);
         }
 
     }

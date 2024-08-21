@@ -19,5 +19,6 @@ enum Color:string {
     const YELLOW = "\033[33m";
     const PURPLE = "\033[35m";
     const GREY = "\033[90m";
+    const RED = "\e[0;31m";
 
 }
