@@ -13,6 +13,6 @@
 namespace Enumeration;
 
 
-enum FolderPath {
+enum FolderPath:string {
     const CONFIG = __DIR__."../../../config";
 }

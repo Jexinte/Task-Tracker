@@ -16,7 +16,7 @@ require __DIR__."../../../vendor/autoload.php";
  * @link     https://github.com/Jexinte/Task-Tracker
  */
 
-enum Message {
+enum Message:string {
 
     const TASK_CLI_LABEL = Color::GREEN." task-cli ";
     const WELCOME = "\n\n Welcome to TaskMaster, your personal task management assistant! Here to help you stay organized and on top of your to-dos.\n\n Below is the list of available commands:\n\n";
@@ -34,11 +34,15 @@ enum Message {
 
     const COMMAND_LISTS_OF_COMMANDS_EXAMPLE = PHP_EOL.Color::GREY."# Listing all commands\n\n"." ".self::TASK_CLI_LABEL.Color::YELLOW."list commands\n\n\n";
 
-    const WRONG_COMMAND = "Please, type a valid command : \n";
+    const TASK_NOT_FOUND = " ".self::TASK_CLI_LABEL.COLOR::RED."The task with the ID : ";
+    const TASK_NOT_FOUND_END = " doesn't exist, please specify a valid one ! \n";
+    const WRONG_COMMAND = Color::RED."Please, type a valid command \n";
 
-    const WRONG_TYPO = self::TASK_CLI_LABEL.COLOR::YELLOW.'Please specify a task with quotes next to add in order to register it. Only letters from a to z and numbers are accepted'.PHP_EOL;
+    const TASK_NAME_FOR_THE_ADD_COMMAND_HAS_NOT_BEEN_SUPPLIED = self::TASK_CLI_LABEL.COLOR::RED.'Please specify a task with quotes next to add in order to register it. Only letters from a to z and numbers are accepted !'.PHP_EOL;
+    const TASK_NAME_FOR_THE_UPDATE_COMMAND_HAS_NOT_BEEN_SUPPLIED = self::TASK_CLI_LABEL.COLOR::RED.'Please specify an ID for the task that you want to update then the name of the updated task with quotes. Only letters from a to z and numbers are accepted !'.PHP_EOL;
 
-    const TASK_ADDED_SUCCESSFULLY = "\n ".Color::GREY."Task added successfully (ID: ";
+    const TASK_ADDED_SUCCESSFULLY = "\n ".Color::GREY." Task added successfully (ID: ";
+    const TASK_UPDATED_SUCCESSFULLY = "\n ".Color::GREY." Task updated successfully (ID: ";
     const COMMANDS = [self::COMMAND_ADD_EXAMPLE,self::COMMAND_UPDATE_EXAMPLE,self::COMMAND_DELETE_EXAMPLE,self::COMMAND_MARK_IN_PROGRESS_EXAMPLE,self::COMMAND_MARK_DONE_EXAMPLE,self::COMMAND_LISTS_TASKS_EXAMPLE,self::COMMAND_LISTS_BY_STATUS_EXAMPLE];
 
 }

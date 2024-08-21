@@ -13,6 +13,7 @@ namespace Enumeration;
  * @link     https://github.com/Jexinte/Task-Tracker
  */
 
-enum Regex {
+enum Regex:string {
     const TASK = '/^"[a-zA-z\d\s]+"$/';
+    const NUMBERS = '/\d+/';
 }

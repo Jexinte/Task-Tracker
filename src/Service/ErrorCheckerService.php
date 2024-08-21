@@ -38,4 +38,26 @@ class ErrorCheckerService {
 
     }
 
+    /**
+     * Summary of onUpdateCommandValues
+     * 
+     * @param string $value
+     * 
+     * @return bool|array<int,string>
+     */
+    public function onUpdateCommandValues(string $value) : bool|array
+    {
+        preg_match(Regex::NUMBERS,$value,$matches);
+
+        $id = $matches;
+        
+        $firstPosOfDoublesQuotes = strpos($value,'"');
+        $taskName = substr($value,$firstPosOfDoublesQuotes);
+
+        if(empty($id) || empty (preg_grep(Regex::TASK,explode(' ',$taskName)))){
+            return false;
+        }
+         return [intval(current($id)),$taskName];
+    }
+
 }
