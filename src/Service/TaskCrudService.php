@@ -147,28 +147,26 @@ class TaskCrudService implements TaskManagerCrud{
      */
     public function handleDataForUpdate(array $arrWithIdAndTaskNameToUpdated):bool|array
     {
-        $arrayOfDataInJsonFile = $this->jsonFile->content();
         $id = current($arrWithIdAndTaskNameToUpdated);
-        if(empty($arrayOfDataInJsonFile)){
+        if(empty($this->jsonFile->content())){
             return false;
         }
 
-       return $this->findOne($id,$arrayOfDataInJsonFile);
+       return $this->findOne($id);
     }
 
     /**
      * Summary of findOne
      * 
      * @param int $id
-     * @param array $arrayOfDataInJsonFile
      * 
      * @throws \Exception
      * 
      * @return array<string>
      */
-    public function findOne(int $id , array $arrayOfDataInJsonFile):array
+    public function findOne(int $id):?array
     {
-        foreach($arrayOfDataInJsonFile as $task){
+        foreach($this->jsonFile->content() as $task){
             if($task["id"] == $id){
                 return $task;
             }            
