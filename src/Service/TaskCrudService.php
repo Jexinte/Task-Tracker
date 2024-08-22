@@ -26,6 +26,7 @@ interface TaskManagerCrud {
     public function findOne(int $id):?array;
     public function update(mixed $value):?bool;
     public function delete(int $id):?bool;
+    public function markInProgressATask(int $id):?bool;
 }
 
 
@@ -203,6 +204,39 @@ class TaskCrudService implements TaskManagerCrud{
             fwrite($stdOut," ".Message::TASK_DELETED_SUCCESSFULLY);
             fclose($stdOut);
 
+            return true;
+        }
+        return null;
+    }
+
+    /**
+     * Summary of markInProgressATask
+     * 
+     * @param int $id
+     * 
+     * @return bool|null
+     */
+    public function markInProgressATask(int $id):?bool
+    {
+        $taskToMark = $this->findOne($id);
+
+        if(is_array($taskToMark)){
+            $taskToMark["status"] = "in-progress";
+            $taskToMark["updatedAt"] = date('Y-m-d');
+            $arrayOfOriginalData = $this->jsonFile->content();
+
+            foreach($arrayOfOriginalData as $k => $task){
+                if($task["id"] == $id)
+                {
+                    $arrayOfOriginalData[$k] = $taskToMark;
+                }
+            }
+            $json = json_encode(array_values($arrayOfOriginalData));
+            file_put_contents(FilePath::TASKS,$json);
+
+            $stdOut = fopen('php://stdout','a');
+            fwrite($stdOut," ".Message::TASK_MARK_IN_PROGRESS_SUCCESSFULLY);
+            fclose($stdOut);
             return true;
         }
         return null;

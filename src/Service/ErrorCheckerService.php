@@ -63,7 +63,7 @@ class ErrorCheckerService {
     
 
     /**
-     * Summary of onDeleteCommandValues
+     * Summary of onDeleteOrMarkInProgressOrMarkDoneCommandValues
      * 
      * @param string $value
      * 

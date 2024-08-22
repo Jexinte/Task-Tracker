@@ -130,6 +130,12 @@ class TaskManagerService
                 if($taskDeleted){
                     return;
                 }
+                
+            case TaskCommand::MARK_IN_PROGRESS:
+                $taskIsMarkInProgress = $this->taskCrudService->markInProgressATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value));
+                if($taskIsMarkInProgress){
+                    return ;
+                }
         }
 
     }
