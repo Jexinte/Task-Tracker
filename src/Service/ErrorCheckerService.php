@@ -12,7 +12,9 @@
 
 namespace Service;
 
+use Exception;
 use Enumeration\Regex;
+use Enumeration\Message;
 
 
 
@@ -23,7 +25,9 @@ class ErrorCheckerService {
      * 
      * @param string $value
      * 
-     * @return bool|string
+     * @throws \Exception
+     * 
+     * @return string|bool
      */
     public function onAddCommandValues(string $value):string|bool
     {
@@ -34,8 +38,7 @@ class ErrorCheckerService {
         if($theValueHaveTheFormatExpected){
             return $taskValue;
         }
-        return false;
-
+        throw new Exception(" ".Message::TASK_NAME_FOR_THE_ADD_COMMAND_HAS_NOT_BEEN_SUPPLIED);
     }
 
     /**
@@ -43,7 +46,9 @@ class ErrorCheckerService {
      * 
      * @param string $value
      * 
-     * @return bool|array<int,string>
+     * @throws \Exception
+     * 
+     * @return bool|array
      */
     public function onUpdateCommandValues(string $value) : bool|array
     {
@@ -54,10 +59,39 @@ class ErrorCheckerService {
         $firstPosOfDoublesQuotes = strpos($value,'"');
         $taskName = substr($value,$firstPosOfDoublesQuotes);
 
-        if(empty($id) || empty (preg_grep(Regex::TASK,explode(' ',$taskName)))){
-            return false;
+        preg_match(Regex::TASK,$taskName,$matchesForTaskName);
+        
+        if(empty($id) || empty ($matchesForTaskName)){
+            throw new Exception(" ".Message::TASK_NAME_FOR_THE_UPDATE_COMMAND_HAS_NOT_BEEN_SUPPLIED);
         }
-         return [intval(current($id)),$taskName];
+         return [intval(current($id)),str_replace('"',"",$taskName)];
     }
+
+    
+
+
+    /**
+     * Summary of onDeleteOrMarkInProgressOrMarkDoneCommandValues
+     * 
+     * @param string $value
+     * @param string $command
+     * 
+     * @throws \Exception
+     * 
+     * @return array<int,string>
+     */
+    public function onDeleteOrMarkInProgressOrMarkDoneCommandValues(string $value,string $command = null):array
+    {
+        preg_match(Regex::NUMBERS,$value,$matches);
+
+        $id = $matches;
+
+        if(empty($id)){
+            throw new Exception(" ".Message::TASK_ID_REQUIRED_TO_EXECUTE_THE_COMMAND);
+        }
+
+        return [intval(current($id)),$command];
+    }
+
 
 }

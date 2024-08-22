@@ -17,13 +17,17 @@ use Entity\Task;
 use Config\JsonFile;
 use Enumeration\Message;
 use Enumeration\FilePath;
+use Enumeration\TaskCommand;
 
 /**
  * Summary of TaskManagerCrud
  */
 interface TaskManagerCrud {
     public function create(mixed $value):?bool;
+    public function findOne(int $id):?array;
     public function update(mixed $value):?bool;
+   public function delete(mixed $id):?bool;
+    public function markInProgressOrDoneATask(mixed $array):?bool;
 }
 
 
@@ -147,32 +151,103 @@ class TaskCrudService implements TaskManagerCrud{
      */
     public function handleDataForUpdate(array $arrWithIdAndTaskNameToUpdated):bool|array
     {
-        $arrayOfDataInJsonFile = $this->jsonFile->content();
         $id = current($arrWithIdAndTaskNameToUpdated);
-        if(empty($arrayOfDataInJsonFile)){
+        if(empty($this->jsonFile->content())){
             return false;
         }
 
-       return $this->findOne($id,$arrayOfDataInJsonFile);
+       return $this->findOne($id);
     }
 
     /**
      * Summary of findOne
      * 
      * @param int $id
-     * @param array $arrayOfDataInJsonFile
      * 
      * @throws \Exception
      * 
      * @return array<string>
      */
-    public function findOne(int $id , array $arrayOfDataInJsonFile):array
+    public function findOne(int $id):?array
     {
-        foreach($arrayOfDataInJsonFile as $task){
+        foreach($this->jsonFile->content() as $task){
             if($task["id"] == $id){
                 return $task;
             }            
         }
         throw new Exception(Message::TASK_NOT_FOUND.$id.Message::TASK_NOT_FOUND_END);
     }
+
+
+    /**
+     * Summary of delete
+     * 
+     * @param mixed $arrWithIdAndIfGivenNameOfTheCommand
+     * 
+     * @return bool|null
+     */
+    public function delete(mixed $arrWithIdAndIfGivenNameOfTheCommand):bool|null
+    {
+        
+        $id = current($arrWithIdAndIfGivenNameOfTheCommand);
+        $taskToDelete = $this->findOne($id);
+
+        if(is_array($taskToDelete)){
+
+            $arrayOfOriginalData = $this->jsonFile->content();
+            foreach( $arrayOfOriginalData as $k => $task)
+            {
+                if($task["id"] == $id){
+                    unset($arrayOfOriginalData[$k]);
+                }
+            }
+
+            $json = json_encode(array_values($arrayOfOriginalData));
+            file_put_contents(FilePath::TASKS,$json);
+
+            $stdOut = fopen('php://stdout','a');
+            fwrite($stdOut," ".Message::TASK_DELETED_SUCCESSFULLY);
+            fclose($stdOut);
+
+            return true;
+        }
+        return null;
+    }
+
+ 
+    public function markInProgressOrDoneATask(mixed $arrWithIdAndIfGivenNameOfTheCommand):?bool
+    {
+
+        $id = current($arrWithIdAndIfGivenNameOfTheCommand);
+        $taskToMark = $this->findOne($id);
+        $inProgressOrDone = $arrWithIdAndIfGivenNameOfTheCommand[1] == TaskCommand::MARK_IN_PROGRESS ? "in-progress" :"done";
+        if(is_array($taskToMark)){
+            
+            $id = current($arrWithIdAndIfGivenNameOfTheCommand);
+            
+            $taskToMark["status"] = $inProgressOrDone;
+            $taskToMark["updatedAt"] = date('Y-m-d');
+            $arrayOfOriginalData = $this->jsonFile->content();
+
+            foreach($arrayOfOriginalData as $k => $task){
+                if($task["id"] == $id)
+                {
+                    $arrayOfOriginalData[$k] = $taskToMark;
+                }
+            }
+
+            $json = json_encode(array_values($arrayOfOriginalData));
+            file_put_contents(FilePath::TASKS,$json);
+
+            $successfullyMessageToDisplay = $arrWithIdAndIfGivenNameOfTheCommand[1] == TaskCommand::MARK_IN_PROGRESS ? Message::TASK_MARK_AS_IN_PROGRESS_SUCCESSFULLY : Message::TASK_MARK_AS_DONE_SUCCESSFULLY;
+            $stdOut = fopen('php://stdout','a');
+            fwrite($stdOut," ".$successfullyMessageToDisplay);
+            fclose($stdOut);
+
+            return true;
+        }
+        return null;
+    }
+
+    
 }

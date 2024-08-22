@@ -41,8 +41,14 @@ enum Message:string {
     const TASK_NAME_FOR_THE_ADD_COMMAND_HAS_NOT_BEEN_SUPPLIED = self::TASK_CLI_LABEL.COLOR::RED.'Please specify a task with quotes next to add in order to register it. Only letters from a to z and numbers are accepted !'.PHP_EOL;
     const TASK_NAME_FOR_THE_UPDATE_COMMAND_HAS_NOT_BEEN_SUPPLIED = self::TASK_CLI_LABEL.COLOR::RED.'Please specify an ID for the task that you want to update then the name of the updated task with quotes. Only letters from a to z and numbers are accepted !'.PHP_EOL;
 
+    const TASK_ID_REQUIRED_TO_EXECUTE_THE_COMMAND = self::TASK_CLI_LABEL.COLOR::RED.'Please specify an ID next to the command  in order to execute it !'.PHP_EOL;
+
+
     const TASK_ADDED_SUCCESSFULLY = "\n ".Color::GREY." Task added successfully (ID: ";
     const TASK_UPDATED_SUCCESSFULLY = "\n ".Color::GREY." Task updated successfully (ID: ";
+    const TASK_DELETED_SUCCESSFULLY = "\n".Color::GREY."  Task deleted successfully\n\n";
+    const TASK_MARK_AS_IN_PROGRESS_SUCCESSFULLY = "\n".Color::GREY.'  Task mark as "in-progress" successfully'.PHP_EOL.PHP_EOL;
+    const TASK_MARK_AS_DONE_SUCCESSFULLY = "\n".Color::GREY.'  Task mark as "done" successfully'.PHP_EOL.PHP_EOL;
     const COMMANDS = [self::COMMAND_ADD_EXAMPLE,self::COMMAND_UPDATE_EXAMPLE,self::COMMAND_DELETE_EXAMPLE,self::COMMAND_MARK_IN_PROGRESS_EXAMPLE,self::COMMAND_MARK_DONE_EXAMPLE,self::COMMAND_LISTS_TASKS_EXAMPLE,self::COMMAND_LISTS_BY_STATUS_EXAMPLE];
 
 }
