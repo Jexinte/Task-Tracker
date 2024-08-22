@@ -126,16 +126,22 @@ class TaskManagerService
                throw new Exception(" ".Message::TASK_NAME_FOR_THE_UPDATE_COMMAND_HAS_NOT_BEEN_SUPPLIED);
 
             case TaskCommand::DELETE:
-                $taskDeleted = $this->taskCrudService->delete($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value));
+                $taskDeleted = $this->taskCrudService->delete($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::DELETE));
                 if($taskDeleted){
                     return;
                 }
-                
             case TaskCommand::MARK_IN_PROGRESS:
-                $taskIsMarkInProgress = $this->taskCrudService->markInProgressATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value));
+                $taskIsMarkInProgress = $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_IN_PROGRESS));
                 if($taskIsMarkInProgress){
                     return ;
                 }
+
+            case TaskCommand::MARK_DONE:
+                $taskIsMarkAsDone = $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_DONE));
+                if($taskIsMarkAsDone){
+                    return ;
+                }
+            
         }
 
     }

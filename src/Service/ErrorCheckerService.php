@@ -12,7 +12,9 @@
 
 namespace Service;
 
+use Exception;
 use Enumeration\Regex;
+use Enumeration\Message;
 
 
 
@@ -62,24 +64,28 @@ class ErrorCheckerService {
 
     
 
+
     /**
      * Summary of onDeleteOrMarkInProgressOrMarkDoneCommandValues
      * 
      * @param string $value
+     * @param string $command
      * 
-     * @return bool|int
+     * @throws \Exception
+     * 
+     * @return array<int,string>
      */
-    public function onDeleteOrMarkInProgressOrMarkDoneCommandValues(string $value):bool|int
+    public function onDeleteOrMarkInProgressOrMarkDoneCommandValues(string $value,string $command = null):array
     {
         preg_match(Regex::NUMBERS,$value,$matches);
 
         $id = $matches;
 
         if(empty($id)){
-            return false;
+            throw new Exception(" ".Message::TASK_ID_REQUIRED_TO_EXECUTE_THE_COMMAND);
         }
 
-        return intval(current($id));
+        return [intval(current($id)),$command];
     }
 
 

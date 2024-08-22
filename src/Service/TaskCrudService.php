@@ -17,6 +17,7 @@ use Entity\Task;
 use Config\JsonFile;
 use Enumeration\Message;
 use Enumeration\FilePath;
+use Enumeration\TaskCommand;
 
 /**
  * Summary of TaskManagerCrud
@@ -25,8 +26,8 @@ interface TaskManagerCrud {
     public function create(mixed $value):?bool;
     public function findOne(int $id):?array;
     public function update(mixed $value):?bool;
-    public function delete(int $id):?bool;
-    public function markInProgressATask(int $id):?bool;
+   public function delete(mixed $id):?bool;
+    public function markInProgressOrDoneATask(mixed $array):?bool;
 }
 
 
@@ -177,18 +178,22 @@ class TaskCrudService implements TaskManagerCrud{
         throw new Exception(Message::TASK_NOT_FOUND.$id.Message::TASK_NOT_FOUND_END);
     }
 
+
     /**
      * Summary of delete
      * 
-     * @param int $id
+     * @param mixed $arrWithIdAndIfGivenNameOfTheCommand
      * 
      * @return bool|null
      */
-    public function delete(int $id):bool|null
+    public function delete(mixed $arrWithIdAndIfGivenNameOfTheCommand):bool|null
     {
+        
+        $id = current($arrWithIdAndIfGivenNameOfTheCommand);
         $taskToDelete = $this->findOne($id);
 
         if(is_array($taskToDelete)){
+
             $arrayOfOriginalData = $this->jsonFile->content();
             foreach( $arrayOfOriginalData as $k => $task)
             {
@@ -209,19 +214,18 @@ class TaskCrudService implements TaskManagerCrud{
         return null;
     }
 
-    /**
-     * Summary of markInProgressATask
-     * 
-     * @param int $id
-     * 
-     * @return bool|null
-     */
-    public function markInProgressATask(int $id):?bool
+ 
+    public function markInProgressOrDoneATask(mixed $arrWithIdAndIfGivenNameOfTheCommand):?bool
     {
-        $taskToMark = $this->findOne($id);
 
+        $id = current($arrWithIdAndIfGivenNameOfTheCommand);
+        $taskToMark = $this->findOne($id);
+        $inProgressOrDone = $arrWithIdAndIfGivenNameOfTheCommand[1] == TaskCommand::MARK_IN_PROGRESS ? "in-progress" :"done";
         if(is_array($taskToMark)){
-            $taskToMark["status"] = "in-progress";
+            
+            $id = current($arrWithIdAndIfGivenNameOfTheCommand);
+            
+            $taskToMark["status"] = $inProgressOrDone;
             $taskToMark["updatedAt"] = date('Y-m-d');
             $arrayOfOriginalData = $this->jsonFile->content();
 
@@ -231,12 +235,15 @@ class TaskCrudService implements TaskManagerCrud{
                     $arrayOfOriginalData[$k] = $taskToMark;
                 }
             }
+
             $json = json_encode(array_values($arrayOfOriginalData));
             file_put_contents(FilePath::TASKS,$json);
 
+            $successfullyMessageToDisplay = $arrWithIdAndIfGivenNameOfTheCommand[1] == TaskCommand::MARK_IN_PROGRESS ? Message::TASK_MARK_AS_IN_PROGRESS_SUCCESSFULLY : Message::TASK_MARK_AS_DONE_SUCCESSFULLY;
             $stdOut = fopen('php://stdout','a');
-            fwrite($stdOut," ".Message::TASK_MARK_IN_PROGRESS_SUCCESSFULLY);
+            fwrite($stdOut," ".$successfullyMessageToDisplay);
             fclose($stdOut);
+
             return true;
         }
         return null;
