@@ -43,6 +43,7 @@ enum Message:string {
 
     const TASK_ADDED_SUCCESSFULLY = "\n ".Color::GREY." Task added successfully (ID: ";
     const TASK_UPDATED_SUCCESSFULLY = "\n ".Color::GREY." Task updated successfully (ID: ";
+    const TASK_DELETED_SUCCESSFULLY = "\n".Color::GREY."  Task deleted successfully\n\n";
     const COMMANDS = [self::COMMAND_ADD_EXAMPLE,self::COMMAND_UPDATE_EXAMPLE,self::COMMAND_DELETE_EXAMPLE,self::COMMAND_MARK_IN_PROGRESS_EXAMPLE,self::COMMAND_MARK_DONE_EXAMPLE,self::COMMAND_LISTS_TASKS_EXAMPLE,self::COMMAND_LISTS_BY_STATUS_EXAMPLE];
 
 }

@@ -124,6 +124,12 @@ class TaskManagerService
                     return;
                 }
                throw new Exception(" ".Message::TASK_NAME_FOR_THE_UPDATE_COMMAND_HAS_NOT_BEEN_SUPPLIED);
+
+            case TaskCommand::DELETE:
+                $taskDeleted = $this->taskCrudService->delete($this->errorCheckerService->onDeleteCommandValues($value));
+                if($taskDeleted){
+                    return;
+                }
         }
 
     }

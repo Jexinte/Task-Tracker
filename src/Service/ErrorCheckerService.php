@@ -60,4 +60,27 @@ class ErrorCheckerService {
          return [intval(current($id)),$taskName];
     }
 
+    
+
+    /**
+     * Summary of onDeleteCommandValues
+     * 
+     * @param string $value
+     * 
+     * @return bool|int
+     */
+    public function onDeleteCommandValues(string $value):bool|int
+    {
+        preg_match(Regex::NUMBERS,$value,$matches);
+
+        $id = $matches;
+
+        if(empty($id)){
+            return false;
+        }
+
+        return intval(current($id));
+    }
+
+
 }

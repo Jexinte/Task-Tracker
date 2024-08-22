@@ -23,7 +23,9 @@ use Enumeration\FilePath;
  */
 interface TaskManagerCrud {
     public function create(mixed $value):?bool;
+    public function findOne(int $id):?array;
     public function update(mixed $value):?bool;
+    public function delete(int $id):?bool;
 }
 
 
@@ -173,4 +175,38 @@ class TaskCrudService implements TaskManagerCrud{
         }
         throw new Exception(Message::TASK_NOT_FOUND.$id.Message::TASK_NOT_FOUND_END);
     }
+
+    /**
+     * Summary of delete
+     * 
+     * @param int $id
+     * 
+     * @return bool|null
+     */
+    public function delete(int $id):bool|null
+    {
+        $taskToDelete = $this->findOne($id);
+
+        if(is_array($taskToDelete)){
+            $arrayOfOriginalData = $this->jsonFile->content();
+            foreach( $arrayOfOriginalData as $k => $task)
+            {
+                if($task["id"] == $id){
+                    unset($arrayOfOriginalData[$k]);
+                }
+            }
+
+            $json = json_encode(array_values($arrayOfOriginalData));
+            file_put_contents(FilePath::TASKS,$json);
+
+            $stdOut = fopen('php://stdout','a');
+            fwrite($stdOut," ".Message::TASK_DELETED_SUCCESSFULLY);
+            fclose($stdOut);
+
+            return true;
+        }
+        return null;
+    }
+
+    
 }
