@@ -69,7 +69,7 @@ class ErrorCheckerService {
      * 
      * @return bool|int
      */
-    public function onDeleteCommandValues(string $value):bool|int
+    public function onDeleteOrMarkInProgressOrMarkDoneCommandValues(string $value):bool|int
     {
         preg_match(Regex::NUMBERS,$value,$matches);
 
