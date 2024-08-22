@@ -126,7 +126,13 @@ class TaskManagerService
 
             case TaskCommand::MARK_DONE:
                 $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_DONE));
-               break;   
+               break;
+            case TaskCommand::LIST_OF_ALL_TASKS:
+                $theCommandListIsAloneWithoutAnythingNextTo = $this->errorCheckerService->onListCommandWithoutAnythingElse($value);
+                if($theCommandListIsAloneWithoutAnythingNextTo){
+                   $this->taskCrudService->findAll();
+                }
+                break;
         }
 
     }

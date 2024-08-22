@@ -24,9 +24,10 @@ use Enumeration\TaskCommand;
  */
 interface TaskManagerCrud {
     public function create(mixed $value):?bool;
+    public function findAll():void;
     public function findOne(int $id):?array;
     public function update(mixed $value):?bool;
-   public function delete(mixed $id):?bool;
+    public function delete(mixed $id):?bool;
     public function markInProgressOrDoneATask(mixed $array):?bool;
 }
 
@@ -178,6 +179,22 @@ class TaskCrudService implements TaskManagerCrud{
         throw new Exception(Message::TASK_NOT_FOUND.$id.Message::TASK_NOT_FOUND_END);
     }
 
+    /**
+     * Summary of findAll
+     * 
+     * @return void
+     */
+    public function findAll():void
+    {
+     
+        $tasks = $this->jsonFile->content();
+        foreach($tasks as $task)
+        {
+            $stdOut = fopen('php://stdout','a');
+            fwrite($stdOut,"\n  ID : ".$task["id"]." - Description : ".$task["description"]." - Created the : ".$task["createdAt"]."\n\n");
+            fclose($stdOut);
+        }
+    }
 
     /**
      * Summary of delete

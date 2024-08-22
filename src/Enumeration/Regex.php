@@ -16,4 +16,5 @@ namespace Enumeration;
 enum Regex:string {
     const TASK = '/^"[a-zA-z\d\s]+"$/';
     const NUMBERS = '/\d+/';
+    const ON_LIST_COMMAND_FOR_ALL_TASKS = '/^list$/';
 }

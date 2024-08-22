@@ -15,6 +15,7 @@ namespace Service;
 use Exception;
 use Enumeration\Regex;
 use Enumeration\Message;
+use Enumeration\Color;
 
 
 
@@ -48,7 +49,7 @@ class ErrorCheckerService {
      * 
      * @throws \Exception
      * 
-     * @return bool|array
+     * @return bool|array<int,string>
      */
     public function onUpdateCommandValues(string $value) : bool|array
     {
@@ -93,5 +94,21 @@ class ErrorCheckerService {
         return [intval(current($id)),$command];
     }
 
+    /**
+     * Summary of onListCommandWithoutAnythingElse
+     * 
+     * @param string $value
+     * 
+     * @throws \Exception
+     * 
+     * @return bool
+     */
+    public function onListCommandWithoutAnythingElse(string $value)
+    {
+        if(strlen($value) == 4 && preg_match(Regex::ON_LIST_COMMAND_FOR_ALL_TASKS,$value,$matches)){
+            return true;
+        }
+        throw new Exception(" ".Message::TASK_CLI_LABEL.COLOR::YELLOW.Message::LIST_COMMAND_FOR_ALL_TASK_HAS_NOT_BEEN_SUPPLIED);
+    }
 
 }
