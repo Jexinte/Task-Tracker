@@ -105,43 +105,28 @@ class TaskManagerService
      * @param string $value
      * @param string $command
      * 
-     * @throws \Exception
-     * 
      * @return void
      */
     public function chooseWhichActionToExecuteDependingOnTheCommand(string $value, string $command):void
     {
         switch($command){
             case TaskCommand::ADD:
-                $taskCreated = $this->taskCrudService->create($this->errorCheckerService->onAddCommandValues($value));
-                if($taskCreated){
-                    return;
-                }
-                throw new Exception(" ".Message::TASK_NAME_FOR_THE_ADD_COMMAND_HAS_NOT_BEEN_SUPPLIED);
+                $this->taskCrudService->create($this->errorCheckerService->onAddCommandValues($value));
+                break;
             case TaskCommand::UPDATE:
-                $taskUpdated = $this->taskCrudService->update($this->errorCheckerService->onUpdateCommandValues($value));
-                if($taskUpdated){
-                    return;
-                }
-               throw new Exception(" ".Message::TASK_NAME_FOR_THE_UPDATE_COMMAND_HAS_NOT_BEEN_SUPPLIED);
+                $this->taskCrudService->update($this->errorCheckerService->onUpdateCommandValues($value));
+                break;
 
             case TaskCommand::DELETE:
-                $taskDeleted = $this->taskCrudService->delete($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::DELETE));
-                if($taskDeleted){
-                    return;
-                }
+                $this->taskCrudService->delete($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::DELETE));
+                break;
             case TaskCommand::MARK_IN_PROGRESS:
-                $taskIsMarkInProgress = $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_IN_PROGRESS));
-                if($taskIsMarkInProgress){
-                    return ;
-                }
+                $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_IN_PROGRESS));
+                break;
 
             case TaskCommand::MARK_DONE:
-                $taskIsMarkAsDone = $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_DONE));
-                if($taskIsMarkAsDone){
-                    return ;
-                }
-            
+                $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_DONE));
+               break;   
         }
 
     }
