@@ -103,12 +103,41 @@ class ErrorCheckerService {
      * 
      * @return bool
      */
-    public function onListCommandWithoutAnythingElse(string $value)
+    public function onListCommandWithoutAnythingElse(string $value):bool
     {
-        if(strlen($value) == 4 && preg_match(Regex::ON_LIST_COMMAND_FOR_ALL_TASKS,$value,$matches)){
-            return true;
-        }
+        if(strlen($value) != 4){
         throw new Exception(" ".Message::TASK_CLI_LABEL.COLOR::YELLOW.Message::LIST_COMMAND_FOR_ALL_TASK_HAS_NOT_BEEN_SUPPLIED);
+        }
+        return true;
+
+    }
+
+    /**
+     * Summary of onListCommandFollowByAnotherCommand
+     * 
+     * @param string $value
+     * @param string $listDoneCommand
+     * @param string $listTodoCommand
+     * @param string $listInProgress
+     * 
+     * @throws \Exception
+     * 
+     * @return string
+     */
+    public function onListCommandFollowByAnotherCommand(string $value,string $listDoneCommand,string $listTodoCommand, string $listInProgress):string
+    {
+        switch($value){
+            case $listDoneCommand:
+                return Message::TASK_DONE;
+            case $listTodoCommand:
+                return Message::TASK_TODO;
+            case $listInProgress:
+                return Message::TASK_IN_PROGRESS;
+            default:
+            throw new Exception(" ".Message::LIST_COMMAND_MISS_ANOTHER_ONE_TO_BE_EXECUTED);
+            
+        }
+
     }
 
 }

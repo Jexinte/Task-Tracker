@@ -49,8 +49,15 @@ enum Message:string {
     const TASK_DELETED_SUCCESSFULLY = "\n".Color::GREY."  Task deleted successfully\n\n";
     const TASK_MARK_AS_IN_PROGRESS_SUCCESSFULLY = "\n".Color::GREY.'  Task mark as "in-progress" successfully'.PHP_EOL.PHP_EOL;
     const TASK_MARK_AS_DONE_SUCCESSFULLY = "\n".Color::GREY.'  Task mark as "done" successfully'.PHP_EOL.PHP_EOL;
-    const LIST_COMMAND_FOR_ALL_TASK_HAS_NOT_BEEN_SUPPLIED = Color::RED.'Please, in order to show all tasks you have to type the command "list" without anything next to'.PHP_EOL;
+    const LIST_COMMAND_FOR_ALL_TASK_HAS_NOT_BEEN_SUPPLIED = Color::RED.'Please, if you wanna see all tasks use the command "list" or another type of tasks list look at the table of commands ! '.PHP_EOL;
+    const LIST_COMMAND_MISS_ANOTHER_ONE_TO_BE_EXECUTED = Color::RED.'Please, in order to show a specific list of task you have to add one of the following : "done", "todo", "in-progress" or "commands"'.PHP_EOL;
+
+    const NO_TASKS_FOUND_WITH_THE_STATUS_ASK =Color::RED.' No tasks have been found with the status supplied !'.PHP_EOL;
     const COMMANDS = [self::COMMAND_ADD_EXAMPLE,self::COMMAND_UPDATE_EXAMPLE,self::COMMAND_DELETE_EXAMPLE,self::COMMAND_MARK_IN_PROGRESS_EXAMPLE,self::COMMAND_MARK_DONE_EXAMPLE,self::COMMAND_LISTS_TASKS_EXAMPLE,self::COMMAND_LISTS_BY_STATUS_EXAMPLE];
+
+    const TASK_DONE = "done";
+    const TASK_TODO = "todo";
+    const TASK_IN_PROGRESS = "in-progress";
 
 }
 
