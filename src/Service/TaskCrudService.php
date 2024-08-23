@@ -26,6 +26,7 @@ interface TaskManagerCrud {
     public function create(mixed $value):?bool;
     public function findAll():void;
     public function findOne(int $id):?array;
+    public function findBy(string $command);
     public function update(mixed $value):?bool;
     public function delete(mixed $id):?bool;
     public function markInProgressOrDoneATask(mixed $array):?bool;
@@ -192,8 +193,10 @@ class TaskCrudService implements TaskManagerCrud{
         {
             $stdOut = fopen('php://stdout','a');
             fwrite($stdOut,"\n  ID : ".$task["id"]." - Description : ".$task["description"]." - Created the : ".$task["createdAt"]."\n\n");
-            fclose($stdOut);
         }
+
+        fclose($stdOut);
+
     }
 
     /**
@@ -232,6 +235,13 @@ class TaskCrudService implements TaskManagerCrud{
     }
 
  
+    /**
+     * Summary of markInProgressOrDoneATask
+     * 
+     * @param mixed $arrWithIdAndIfGivenNameOfTheCommand
+     * 
+     * @return bool|null
+     */
     public function markInProgressOrDoneATask(mixed $arrWithIdAndIfGivenNameOfTheCommand):?bool
     {
 
@@ -264,6 +274,32 @@ class TaskCrudService implements TaskManagerCrud{
             return true;
         }
         return null;
+    }
+
+
+    /**
+     * Summary of findBy
+     * 
+     * @param string $command
+     * 
+     * @throws \Exception
+     * 
+     * @return void
+     */
+    public function findBy(string $command):void
+    {
+        $tasks = $this->jsonFile->content();
+        foreach($tasks as $task)
+        {
+            if($task["status"] == $command)
+            {
+                $stdOut = fopen('php://stdout','a');
+                fwrite($stdOut,"\n  ID : ".$task["id"]." - Description : ".$task["description"]." - Created the : ".$task["createdAt"]." - Status : ".$task["status"]."\n\n");
+                fclose($stdOut);
+                return;
+            }
+            throw new Exception(" ".Message::NO_TASKS_FOUND_WITH_THE_STATUS_ASK);
+        }
     }
 
     

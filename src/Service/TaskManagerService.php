@@ -64,7 +64,6 @@ class TaskManagerService
             
             $streamInput = fopen('php://stdin', "w");
 
-
             try {
                 $this->detectCommand(Message::TASK_CLI_LABEL.COLOR::YELLOW, trim(fgets($streamInput)));
             } catch (Exception $e) {
@@ -87,15 +86,20 @@ class TaskManagerService
      * 
      * @return void
      */
+
+
     public function detectCommand(string $taskCliLabel, string $value): void
     {
-        foreach (TaskCommand::ALL_OF_THEM as $command) {
-            if (str_contains($value, $command)) {
-                $this->chooseWhichActionToExecuteDependingOnTheCommand($value,$command);
-                return;
-            }
+        $command = "";
+        $checkTheCommand = array_filter(TaskCommand::ALL_OF_THEM,fn($command) => substr($value,0,strlen($command)) == $command );
+        $ifTotalOccurrences = count($checkTheCommand);
+        $command = $ifTotalOccurrences == 2 ? next($checkTheCommand): current($checkTheCommand);
+    
+        if(empty($command)){
+            throw new Exception(" ".$taskCliLabel.Message::WRONG_COMMAND);      
         }
-        throw new Exception(" ".$taskCliLabel.Message::WRONG_COMMAND);
+        $this->chooseWhichActionToExecuteDependingOnTheCommand($value,$command);
+        return;  
     }
 
 
@@ -127,12 +131,24 @@ class TaskManagerService
             case TaskCommand::MARK_DONE:
                 $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_DONE));
                break;
-            case TaskCommand::LIST_OF_ALL_TASKS:
+           case TaskCommand::LIST_OF_ALL_TASKS:
                 $theCommandListIsAloneWithoutAnythingNextTo = $this->errorCheckerService->onListCommandWithoutAnythingElse($value);
                 if($theCommandListIsAloneWithoutAnythingNextTo){
                    $this->taskCrudService->findAll();
                 }
+               break;
+            case TaskCommand::LIST_OF_ALL_DONE:
+                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value,TaskCommand::LIST_OF_ALL_DONE,TaskCommand::LIST_OF_ALL_TODO,TaskCommand::LIST_IN_PROGRESS));
                 break;
+
+            case TaskCommand::LIST_IN_PROGRESS:
+                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value,TaskCommand::LIST_OF_ALL_DONE,TaskCommand::LIST_OF_ALL_TODO,TaskCommand::LIST_IN_PROGRESS));
+                break;
+
+            case TaskCommand::LIST_OF_ALL_TODO:
+                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value,TaskCommand::LIST_OF_ALL_DONE,TaskCommand::LIST_OF_ALL_TODO,TaskCommand::LIST_IN_PROGRESS));
+                break;
+
         }
 
     }
