@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * PHP version 8.
@@ -12,6 +12,7 @@
 
 namespace Enumeration;
 
-enum FilePath:string {
-    const TASKS = __DIR__."../../../config/tasks.json";
+enum FilePath: string
+{
+    public const TASKS = __DIR__."../../../config/tasks.json";
 }

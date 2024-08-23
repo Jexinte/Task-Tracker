@@ -1,7 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Enumeration;
-
 
 /**
  * PHP version 8.
@@ -13,8 +12,9 @@ namespace Enumeration;
  * @link     https://github.com/Jexinte/Task-Tracker
  */
 
-enum Regex:string {
-    const TASK = '/^"[a-zA-z\d\s]+"$/';
-    const NUMBERS = '/\d+/';
-    const ON_LIST_COMMAND_FOR_ALL_TASKS = '/^list$/';
+enum Regex: string
+{
+    public const TASK = '/^"[a-zA-z\d\s]+"$/';
+    public const NUMBERS = '/\d+/';
+    public const ON_LIST_COMMAND_FOR_ALL_TASKS = '/^list$/';
 }

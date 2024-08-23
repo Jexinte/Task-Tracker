@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * PHP version 8.
@@ -12,27 +12,26 @@
 
 namespace Enumeration;
 
+enum TaskCommand
+{
+    public const ADD = "add";
 
-enum TaskCommand {
+    public const UPDATE = "update";
 
-    const ADD = "add";
+    public const DELETE = "delete";
 
-    const UPDATE = "update";
+    public const MARK_IN_PROGRESS = "mark-in-progress";
 
-    const DELETE = "delete";
+    public const MARK_DONE = "mark-done";
 
-    const MARK_IN_PROGRESS = "mark-in-progress";
+    public const LIST_OF_ALL_TASKS = "list";
 
-    const MARK_DONE = "mark-done";
+    public const LIST_OF_ALL_DONE = "list done";
 
-    const LIST_OF_ALL_TASKS = "list";
+    public const LIST_OF_ALL_TODO = "list todo";
 
-    const LIST_OF_ALL_DONE = "list done";
+    public const LIST_IN_PROGRESS = "list in-progress";
+    public const LIST_OF_COMMANDS = "list commands";
 
-    const LIST_OF_ALL_TODO = "list todo";
-
-    const LIST_IN_PROGRESS = "list in-progress";
-    const LIST_OF_COMMANDS = "list commands";
-
-    const ALL_OF_THEM = [self::ADD,self::UPDATE,self::DELETE,self::MARK_IN_PROGRESS,self::MARK_DONE,self::LIST_OF_ALL_TASKS,self::LIST_OF_ALL_DONE,self::LIST_OF_ALL_TODO,self::LIST_IN_PROGRESS,self::LIST_OF_COMMANDS];
+    public const ALL_OF_THEM = [self::ADD,self::UPDATE,self::DELETE,self::MARK_IN_PROGRESS,self::MARK_DONE,self::LIST_OF_ALL_TASKS,self::LIST_OF_ALL_DONE,self::LIST_OF_ALL_TODO,self::LIST_IN_PROGRESS,self::LIST_OF_COMMANDS];
 }

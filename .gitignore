@@ -3,3 +3,4 @@ phpstan.neon
 grumphp.yml
 tasks.json
 notes.md
+.php-cs-fixer.cache

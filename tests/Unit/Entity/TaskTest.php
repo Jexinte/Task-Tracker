@@ -54,6 +54,15 @@ class TaskTest extends TestCase{
     }
 
     /**
+     * Summary of testShouldReturnTheSameStatus
+     */
+    public function testShouldReturnATodoStatus():void
+    {
+         $this->task->setStatus("todo");
+         $this->assertSame('todo',$this->task->getStatus());
+    }
+
+    /**
      * Summary of testShouldReturnTheSameCreatedAt
      */
     public function testShouldReturnTheSameCreatedAt():void
