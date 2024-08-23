@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * PHP version 8.
@@ -33,7 +33,9 @@ class TaskManagerService
      * @param ErrorCheckerService $errorCheckerService
      * @param TaskCrudService $taskCrudService
      */
-    public function __construct(private ErrorCheckerService $errorCheckerService,private TaskCrudService $taskCrudService){}
+    public function __construct(private ErrorCheckerService $errorCheckerService, private TaskCrudService $taskCrudService)
+    {
+    }
 
     /**
      * Summary of welcomeMessageWithCommandsAvailable
@@ -49,10 +51,10 @@ class TaskManagerService
 
     /**
      * Summary of startOfTheProgram
-     * 
+     *
      * @return void
      */
-    public function startOfTheProgram():void
+    public function startOfTheProgram(): void
     {
         $this->welcomeMessageWithCommandsAvailable();
 
@@ -60,30 +62,30 @@ class TaskManagerService
             $streamToOutputTaskCliLabel = fopen('php://stdout', 'w');
 
 
-            fwrite($streamToOutputTaskCliLabel," ".Message::TASK_CLI_LABEL.COLOR::YELLOW);
-            
+            fwrite($streamToOutputTaskCliLabel, " ".Message::TASK_CLI_LABEL.COLOR::YELLOW);
+
             $streamInput = fopen('php://stdin', "w");
 
             try {
                 $this->detectCommand(Message::TASK_CLI_LABEL.COLOR::YELLOW, trim(fgets($streamInput)));
             } catch (Exception $e) {
-            $stdErr = fopen("php://stderr", "w");
-            fwrite($stdErr, $e->getMessage());
-            fclose($stdErr);
+                $stdErr = fopen("php://stderr", "w");
+                fwrite($stdErr, $e->getMessage());
+                fclose($stdErr);
             }
             fclose($streamToOutputTaskCliLabel);
         }
     }
-    
+
 
     /**
      * Summary of detectCommand
-     * 
+     *
      * @param string $taskCliLabel
      * @param string $value
-     * 
+     *
      * @throws \Exception
-     * 
+     *
      * @return void
      */
 
@@ -91,29 +93,29 @@ class TaskManagerService
     public function detectCommand(string $taskCliLabel, string $value): void
     {
         $command = "";
-        $checkTheCommand = array_filter(TaskCommand::ALL_OF_THEM,fn($command) => substr($value,0,strlen($command)) == $command );
+        $checkTheCommand = array_filter(TaskCommand::ALL_OF_THEM, fn ($command) => substr($value, 0, strlen($command)) == $command);
         $ifTotalOccurrences = count($checkTheCommand);
-        $command = $ifTotalOccurrences == 2 ? next($checkTheCommand): current($checkTheCommand);
-    
-        if(empty($command)){
-            throw new Exception(" ".$taskCliLabel.Message::WRONG_COMMAND);      
+        $command = $ifTotalOccurrences == 2 ? next($checkTheCommand) : current($checkTheCommand);
+
+        if(empty($command)) {
+            throw new Exception(" ".$taskCliLabel.Message::WRONG_COMMAND);
         }
-        $this->chooseWhichActionToExecuteDependingOnTheCommand($value,$command);
-        return;  
+        $this->chooseWhichActionToExecuteDependingOnTheCommand($value, $command);
+        return;
     }
 
 
     /**
      * Summary of chooseWhichActionToExecuteDependingOnTheCommand
-     * 
+     *
      * @param string $value
      * @param string $command
-     * 
+     *
      * @return void
      */
-    public function chooseWhichActionToExecuteDependingOnTheCommand(string $value, string $command):void
+    public function chooseWhichActionToExecuteDependingOnTheCommand(string $value, string $command): void
     {
-        switch($command){
+        switch($command) {
             case TaskCommand::ADD:
                 $this->taskCrudService->create($this->errorCheckerService->onAddCommandValues($value));
                 break;
@@ -122,51 +124,50 @@ class TaskManagerService
                 break;
 
             case TaskCommand::DELETE:
-                $this->taskCrudService->delete($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::DELETE));
+                $this->taskCrudService->delete($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value, TaskCommand::DELETE));
                 break;
             case TaskCommand::MARK_IN_PROGRESS:
-                $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_IN_PROGRESS));
+                $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value, TaskCommand::MARK_IN_PROGRESS));
                 break;
 
             case TaskCommand::MARK_DONE:
-                $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value,TaskCommand::MARK_DONE));
-               break;
-           case TaskCommand::LIST_OF_ALL_TASKS:
+                $this->taskCrudService->markInProgressOrDoneATask($this->errorCheckerService->onDeleteOrMarkInProgressOrMarkDoneCommandValues($value, TaskCommand::MARK_DONE));
+                break;
+            case TaskCommand::LIST_OF_ALL_TASKS:
                 $theCommandListIsAloneWithoutAnythingNextTo = $this->errorCheckerService->onListCommandWithoutAnythingElse($value);
-                if($theCommandListIsAloneWithoutAnythingNextTo){
-                   $this->taskCrudService->findAll();
+                if($theCommandListIsAloneWithoutAnythingNextTo) {
+                    $this->taskCrudService->findAll();
                 }
-               break;
+                break;
             case TaskCommand::LIST_OF_ALL_DONE:
-                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value,TaskCommand::LIST_OF_ALL_DONE,TaskCommand::LIST_OF_ALL_TODO,TaskCommand::LIST_IN_PROGRESS));
+                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value, TaskCommand::LIST_OF_ALL_DONE, TaskCommand::LIST_OF_ALL_TODO, TaskCommand::LIST_IN_PROGRESS));
                 break;
 
             case TaskCommand::LIST_IN_PROGRESS:
-                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value,TaskCommand::LIST_OF_ALL_DONE,TaskCommand::LIST_OF_ALL_TODO,TaskCommand::LIST_IN_PROGRESS));
+                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value, TaskCommand::LIST_OF_ALL_DONE, TaskCommand::LIST_OF_ALL_TODO, TaskCommand::LIST_IN_PROGRESS));
                 break;
 
             case TaskCommand::LIST_OF_ALL_TODO:
-                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value,TaskCommand::LIST_OF_ALL_DONE,TaskCommand::LIST_OF_ALL_TODO,TaskCommand::LIST_IN_PROGRESS));
+                $this->taskCrudService->findBy($this->errorCheckerService->onListCommandFollowByAnotherCommand($value, TaskCommand::LIST_OF_ALL_DONE, TaskCommand::LIST_OF_ALL_TODO, TaskCommand::LIST_IN_PROGRESS));
                 break;
 
         }
 
     }
-    
+
 }
 
 try {
-    
-$errorChecker = new ErrorCheckerService();
-$jsonFile = new JsonFile();
-$task = new Task($jsonFile);
-$taskCrudService = new TaskCrudService($jsonFile,$task);
 
-$taskManagerService = new TaskManagerService($errorChecker,$taskCrudService);
-$taskManagerService->startOfTheProgram();
+    $errorChecker = new ErrorCheckerService();
+    $jsonFile = new JsonFile();
+    $task = new Task($jsonFile);
+    $taskCrudService = new TaskCrudService($jsonFile, $task);
+
+    $taskManagerService = new TaskManagerService($errorChecker, $taskCrudService);
+    $taskManagerService->startOfTheProgram();
 } catch (Exception $e) {
     $stdErr = fopen("php://stderr", "w");
     fwrite($stdErr, $e->getMessage());
     fclose($stdErr);
 }
-

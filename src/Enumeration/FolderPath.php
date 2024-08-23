@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * PHP version 8.
@@ -12,7 +12,7 @@
 
 namespace Enumeration;
 
-
-enum FolderPath:string {
-    const CONFIG = __DIR__."../../../config";
+enum FolderPath: string
+{
+    public const CONFIG = __DIR__."../../../config";
 }

@@ -19,7 +19,8 @@
     "require-dev": {
         "phpro/grumphp": "^2.6",
         "phpstan/phpstan": "^1.11",
-        "phpunit/phpunit": "11"
+        "phpunit/phpunit": "11",
+        "friendsofphp/php-cs-fixer": "^3.62"
     },
     
     "config": {

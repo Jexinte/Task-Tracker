@@ -12,12 +12,11 @@
 
 namespace Config;
 
-
 use Enumeration\FolderPath;
 use Enumeration\FilePath;
 
-class JsonFile{
-
+class JsonFile
+{
     /**
      * Summary of tasks
      * @var array<string>
@@ -31,42 +30,41 @@ class JsonFile{
     public function isCreated(): ?bool
     {
         $files = scandir(FolderPath::CONFIG);
-        $filename = basename(FilePath::TASKS,"tasks.json");
-        return in_array($filename,$files);
-        
+        $filename = basename(FilePath::TASKS, "tasks.json");
+        return in_array($filename, $files);
+
     }
-    
+
     /**
      * Summary of create
      */
     public function create(): void
     {
-        if(!$this->isCreated()){
-        $file = fopen(FilePath::TASKS,"w");
-        fclose($file);
+        if(!$this->isCreated()) {
+            $file = fopen(FilePath::TASKS, "w");
+            fclose($file);
         }
 
     }
-    
+
     /**
      * Summary of content
      *
      * @return array<null|string>
      */
     public function content(): ?array
-    {           
-        switch(true)
-        {
-            case file_exists(FilePath::TASKS) && is_null(json_decode(file_get_contents(FilePath::TASKS),true)):
+    {
+        switch(true) {
+            case file_exists(FilePath::TASKS) && is_null(json_decode(file_get_contents(FilePath::TASKS), true)):
                 $this->tasks = [];
-            break;
+                break;
 
             default:
-            $this->tasks = json_decode(file_get_contents(FilePath::TASKS),true);
-            break;
+                $this->tasks = json_decode(file_get_contents(FilePath::TASKS), true);
+                break;
         }
         return  $this->tasks;
-            
+
     }
 
 }
