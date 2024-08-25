@@ -82,17 +82,17 @@ class TaskCrudService implements TaskManagerCrud
         $this->task->setCreatedAt();
         $this->task->setUpdatedAt();
 
-        $data = [];
-        $data["id"] = $this->task->getId();
-        $data["description"] = $this->task->getDescription();
-        $data["status"] = $this->task->getStatus();
-        $data["createdAt"] = $this->task->getCreatedAt();
-        $data["updatedAt"] = $this->task->getUpdatedAt();
+        $dataFromUserInput = [];
+        $dataFromUserInput["id"] = $this->task->getId();
+        $dataFromUserInput["description"] = $this->task->getDescription();
+        $dataFromUserInput["status"] = $this->task->getStatus();
+        $dataFromUserInput["createdAt"] = $this->task->getCreatedAt();
+        $dataFromUserInput["updatedAt"] = $this->task->getUpdatedAt();
 
-        $originalArrayForData = $this->jsonFile->content();
-        array_push($originalArrayForData, $data);
+        $originalDataArray = $this->jsonFile->content();
+        array_push($originalDataArray, $dataFromUserInput);
 
-        $json = json_encode($originalArrayForData);
+        $json = json_encode($originalDataArray);
         file_put_contents(FilePath::TASKS, $json);
     }
 
@@ -109,12 +109,12 @@ class TaskCrudService implements TaskManagerCrud
 
             $id = current($arrWithIdAndTaskNameToUpdated);
             $taskDescription = $arrWithIdAndTaskNameToUpdated[1];
-            $taskArrayFromJson = $this->handleDataForUpdate($arrWithIdAndTaskNameToUpdated);
+            $taskToUpdate = $this->findOne(current($arrWithIdAndTaskNameToUpdated));
 
-            $taskArrayFromJson["description"]  = $taskDescription;
-            $taskArrayFromJson["updatedAt"]  = date('Y-m-d');
+            $taskToUpdate["description"]  = $taskDescription;
+            $taskToUpdate["updatedAt"]  = date('Y-m-d');
 
-            $dataUpdated = $this->updateDataInOriginalArrayOfTasks($id, $this->jsonFile->content(), $taskArrayFromJson);
+            $dataUpdated = $this->updateDataInOriginalArrayOfTasks($id, $this->jsonFile->content(), $taskToUpdate);
             $json = json_encode($dataUpdated);
             file_put_contents(Filepath::TASKS, $json);
 
@@ -135,34 +135,18 @@ class TaskCrudService implements TaskManagerCrud
      *
      * @return array<string>
      */
-    public function updateDataInOriginalArrayOfTasks(int $id, array $arrOfOriginalData, array $arrOfDataUpdated): array
+    public function updateDataInOriginalArrayOfTasks(int $id, array $arrayOfOriginalData, array $arrOfDataUpdated): array
     {
 
-        foreach($arrOfOriginalData as $k => $originalData) {
+        foreach($arrayOfOriginalData as $k => $originalData) {
             if($originalData["id"] == $id) {
-                $arrOfOriginalData[$k] = $arrOfDataUpdated;
+                $arrayOfOriginalData[$k] = $arrOfDataUpdated;
             }
         }
-        return $arrOfOriginalData;
+        return $arrayOfOriginalData;
     }
 
 
-    /**
-     * Summary of handleDataForUpdate
-     *
-     * @param array<int,string> $arrWithIdAndTaskNameToUpdated
-     *
-     * @return array<string>|bool
-     */
-    public function handleDataForUpdate(array $arrWithIdAndTaskNameToUpdated): bool|array
-    {
-        $id = current($arrWithIdAndTaskNameToUpdated);
-        if(empty($this->jsonFile->content())) {
-            return false;
-        }
-
-        return $this->findOne(intval($id));
-    }
 
     /**
      * Summary of findOne

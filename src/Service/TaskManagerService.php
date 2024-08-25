@@ -94,9 +94,9 @@ class TaskManagerService
     public function detectCommand(string $taskCliLabel, string $value): void
     {
         $command = "";
-        $checkTheCommand = array_filter(TaskCommand::ALL_OF_THEM, fn ($command) => substr($value, 0, strlen($command)) == $command);
-        $ifTotalOccurrences = count($checkTheCommand);
-        $command = $ifTotalOccurrences == 2 ? next($checkTheCommand) : current($checkTheCommand);
+        $checkIfTheUserInputMatchOneOfTheCommandAvailable = array_filter(TaskCommand::ALL_OF_THEM, fn ($command) => substr($value, 0, strlen($command)) == $command);
+        $ifTotalOccurrences = count($checkIfTheUserInputMatchOneOfTheCommandAvailable);
+        $command = $ifTotalOccurrences == 2 ? next($checkIfTheUserInputMatchOneOfTheCommandAvailable) : current($checkIfTheUserInputMatchOneOfTheCommandAvailable);
 
         if(empty($command)) {
             throw new Exception(" ".$taskCliLabel.Message::WRONG_COMMAND);
