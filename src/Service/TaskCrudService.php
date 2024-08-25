@@ -192,6 +192,9 @@ class TaskCrudService implements TaskManagerCrud
     {
 
         $tasks = $this->jsonFile->content();
+        if(empty($tasks)) {
+            throw new Exception(Message::TASKS_NOT_FOUND); 
+        }
         foreach($tasks as $task) {
             $stdOut = fopen('php://stdout', 'a');
             fwrite($stdOut, "\n  ID : ".$task["id"]." - Description : ".$task["description"]." - Created the : ".$task["createdAt"]." - Status : ".$task["status"]."\n\n");

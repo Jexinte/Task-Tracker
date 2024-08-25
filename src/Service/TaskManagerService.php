@@ -26,7 +26,7 @@ require_once __DIR__ . "../../../vendor/autoload.php";
 
 class TaskManagerService
 {
-    public bool $aCommandHaventBeenChose = false;
+    public bool $userHaventStopTheProgram = false;
 
     /**
      * Summary of __construct
@@ -58,22 +58,23 @@ class TaskManagerService
     {
         $this->welcomeMessageWithCommandsAvailable();
 
-        while (!$this->aCommandHaventBeenChose) {
+        while (!$this->userHaventStopTheProgram) {
             $streamToOutputTaskCliLabel = fopen('php://stdout', 'w');
 
 
             fwrite($streamToOutputTaskCliLabel, " ".Message::TASK_CLI_LABEL.COLOR::YELLOW);
 
-            $streamInput = fopen('php://stdin', "w");
+            $userInput = fopen('php://stdin', "w");
 
             try {
-                $this->detectCommand(Message::TASK_CLI_LABEL.COLOR::YELLOW, trim(fgets($streamInput)));
+                $this->detectCommand(Message::TASK_CLI_LABEL.COLOR::YELLOW, trim(fgets($userInput)));
             } catch (Exception $e) {
                 $stdErr = fopen("php://stderr", "w");
                 fwrite($stdErr, $e->getMessage());
                 fclose($stdErr);
             }
             fclose($streamToOutputTaskCliLabel);
+            fclose($userInput);
         }
     }
 
