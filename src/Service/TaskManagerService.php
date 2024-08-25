@@ -26,7 +26,7 @@ require_once __DIR__ . "../../../vendor/autoload.php";
 
 class TaskManagerService
 {
-    public bool $aCommandHaventBeenChose = false;
+    public bool $userHaventStopTheProgram = false;
 
     /**
      * Summary of __construct
@@ -58,22 +58,23 @@ class TaskManagerService
     {
         $this->welcomeMessageWithCommandsAvailable();
 
-        while (!$this->aCommandHaventBeenChose) {
+        while (!$this->userHaventStopTheProgram) {
             $streamToOutputTaskCliLabel = fopen('php://stdout', 'w');
 
 
             fwrite($streamToOutputTaskCliLabel, " ".Message::TASK_CLI_LABEL.COLOR::YELLOW);
 
-            $streamInput = fopen('php://stdin', "w");
+            $userInput = fopen('php://stdin', "w");
 
             try {
-                $this->detectCommand(Message::TASK_CLI_LABEL.COLOR::YELLOW, trim(fgets($streamInput)));
+                $this->detectCommand(Message::TASK_CLI_LABEL.COLOR::YELLOW, trim(fgets($userInput)));
             } catch (Exception $e) {
                 $stdErr = fopen("php://stderr", "w");
                 fwrite($stdErr, $e->getMessage());
                 fclose($stdErr);
             }
             fclose($streamToOutputTaskCliLabel);
+            fclose($userInput);
         }
     }
 
@@ -93,9 +94,9 @@ class TaskManagerService
     public function detectCommand(string $taskCliLabel, string $value): void
     {
         $command = "";
-        $checkTheCommand = array_filter(TaskCommand::ALL_OF_THEM, fn ($command) => substr($value, 0, strlen($command)) == $command);
-        $ifTotalOccurrences = count($checkTheCommand);
-        $command = $ifTotalOccurrences == 2 ? next($checkTheCommand) : current($checkTheCommand);
+        $checkIfTheUserInputMatchOneOfTheCommandAvailable = array_filter(TaskCommand::ALL_OF_THEM, fn ($command) => substr($value, 0, strlen($command)) == $command);
+        $ifTotalOccurrences = count($checkIfTheUserInputMatchOneOfTheCommandAvailable);
+        $command = $ifTotalOccurrences == 2 ? next($checkIfTheUserInputMatchOneOfTheCommandAvailable) : current($checkIfTheUserInputMatchOneOfTheCommandAvailable);
 
         if(empty($command)) {
             throw new Exception(" ".$taskCliLabel.Message::WRONG_COMMAND);
